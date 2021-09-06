@@ -12,33 +12,28 @@ library(ggthemes)
 
 # Loading data ----
 
-colleges <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/cbf14bb032ef4bd38e20429f71acb61a_2.geojson?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D")
+high_tide <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/74692fe1b9b24f3c9419cd61b87e4e3b_5.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D")
 
-nhoods <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/3525b0ee6e6b427f9aab5d0a1d0a1a28_0.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D")
+nhood <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/3525b0ee6e6b427f9aab5d0a1d0a1a28_0.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D")
 
-bike <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/1f63e8e31f664833827c407c021ad60c_0.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D")
+hospitals <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/8f1e5741a4ee4c0f82925d17aab3c002_2.geojson?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D")
 
 # Plotting ----
 
-college_plot <- ggplot(colleges) +
-  geom_sf()
-
-nhood_shp <- ggplot(nhoods) +
+nhood_shp <- ggplot(nhood) +
   geom_sf()
   
-bike_line <- ggplot(bike) +
-  geom_sf()
-
-nhood_shp +
-  geom_sf(color = NA, alpha = 0.5,
+ggplot(nhood) +
+  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight") +
+  labs(caption = "2070 Sea-Level Rise Threat (36-in) to Boston Hospitals") + 
+  geom_sf(alpha = 0.2, 
         aes(fill = "Boston Neighborhood")) +
-  geom_sf(data = bike, color = "blue",
-        aes(color = "Bike Routes")) +
-  geom_sf(data = colleges, shape = 16, color = "red", 
-        aes(color = "Colleges")) +
-  scale_fill_manual(values = "yellow", name = "") + 
+  geom_sf(data = high_tide, alpha = 0.2, color = NA, 
+        aes(fill = "Predicted Sea-Level Rise by 2070")) +
+  geom_sf(data = hospitals, shape = 16, 
+        aes(color = "Boston Hospitals")) +
+  scale_fill_manual(values = c("purple","lightgoldenrod"), name = "") +
+  scale_color_manual(values = "red", name = "") +
+  theme_void()      
   
-
-
-
 # Saving file format ---
